@@ -23,14 +23,15 @@ template<typename WordSize> vector<WordSize> key_to_words(const string& key)
     // Pad key to word length
     ostringstream os;
     os << key;
-    while (os.str().length() % sizeof(uint32_t))
+    while (os.str().length() % sizeof(WordSize))
         os << '\0';
     string key_padded = os.str();
 
     // Preload key into word array
-    vector<uint32_t> key_words;
-    for (unsigned i = 0; i < key_padded.length(); i += sizeof(uint32_t)) {
-        uint32_t key_word =
+    vector<WordSize> key_words;
+    for (unsigned i = 0; i < key_padded.length(); i += sizeof(WordSize)) {
+        // TODO: Make dynamic to accomodate word sizes higher than 32 bits
+        WordSize key_word =
             (key_padded[i] << 24) + (key_padded[i + 1] << 16) + (key_padded[i + 2] << 8) + key_padded[i + 3];
         key_words.push_back(key_word);
     }
