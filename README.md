@@ -2,7 +2,7 @@
 
 A chaos-based, metamorphic block cipher based on second-order cellular automata (MECA).
 
-* 128-bit block size
+* 128 or 256-bit block size
 * Key size of up to 255 bytes
 * Metamorphic engine to select second-order rules to evolve based on incoming data
 * Configurable rounds for added security
@@ -11,7 +11,7 @@ A chaos-based, metamorphic block cipher based on second-order cellular automata 
 
 ## Output
 
-Configured for 15 rounds
+Configured for 15 rounds with 128-bit block size
 
 ```
 plaintext: 00001337 00001337 00001337 00001337
@@ -22,9 +22,19 @@ enc time : 46 microseconds
 dec time : 43 microseconds
 ```
 
+Configured for 15 rounds with 256-bit block size
+
+```
+plaintext: 0000000000001337 0000000000001337 0000000000001337 0000000000001337
+key      : 4d79206372696d65 2069732074686174 206f662063757269 6f73697479000000
+encrypted: f93c3f9aa190830e 26cc1764f2b1e672 fce9cc8a79d8a855 1425184e184832b8
+decrypted: 0000000000001337 0000000000001337 0000000000001337 0000000000001337
+enc time : 86 microseconds
+dec time : 81 microseconds
+```
+
 ## Future plans
 
-- [ ] Extend block size to 256 bits
 - [ ] Metamorphic engine for key scheduling (xor, add, subtract, invert, etc)
 
 ## References
