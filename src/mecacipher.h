@@ -89,8 +89,10 @@ template<typename WordSize, size_t Rounds> class MECACipher
     {
         const size_t bitsize = numeric_limits<WordSize>::digits;
         vector<WordSize> output_block(4);
-        MECA<bitsize, BOUNDARY_PERIODIC> a((uint64_t) (plaintext[0]) << bitsize | plaintext[1]);
-        MECA<bitsize, BOUNDARY_PERIODIC> b((uint64_t) (plaintext[2]) << bitsize | plaintext[3]);
+        MECA<bitsize, BOUNDARY_PERIODIC> a(bitset<bitsize * 2>(plaintext[0]) << bitsize |
+                                           bitset<bitsize * 2>(plaintext[1]));
+        MECA<bitsize, BOUNDARY_PERIODIC> b(bitset<bitsize * 2>(plaintext[2]) << bitsize |
+                                           bitset<bitsize * 2>(plaintext[3]));
 
         for (unsigned round = 0, key = 0; round < Rounds; round++, key += 2) {
             a.xor_state(round_keys[key]);
@@ -115,8 +117,10 @@ template<typename WordSize, size_t Rounds> class MECACipher
     {
         const size_t bitsize = numeric_limits<WordSize>::digits;
         vector<WordSize> output_block(4);
-        MECA<bitsize, BOUNDARY_PERIODIC> a((uint64_t) (ciphertext[0]) << bitsize | ciphertext[1], true);
-        MECA<bitsize, BOUNDARY_PERIODIC> b((uint64_t) (ciphertext[2]) << bitsize | ciphertext[3], true);
+        MECA<bitsize, BOUNDARY_PERIODIC> a(
+            bitset<bitsize * 2>(ciphertext[0]) << bitsize | bitset<bitsize * 2>(ciphertext[1]), true);
+        MECA<bitsize, BOUNDARY_PERIODIC> b(
+            bitset<bitsize * 2>(ciphertext[2]) << bitsize | bitset<bitsize * 2>(ciphertext[3]), true);
 
         for (unsigned round = 0, key = Rounds * 2 - 1; round < Rounds; round++, key -= 2) {
             morph(b);

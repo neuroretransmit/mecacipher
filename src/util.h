@@ -30,9 +30,10 @@ template<typename WordSize> vector<WordSize> key_to_words(const string& key)
     // Preload key into word array
     vector<WordSize> key_words;
     for (unsigned i = 0; i < key_padded.length(); i += sizeof(WordSize)) {
-        // TODO: Make dynamic to accomodate word sizes higher than 32 bits
-        WordSize key_word =
-            (key_padded[i] << 24) + (key_padded[i + 1] << 16) + (key_padded[i + 2] << 8) + key_padded[i + 3];
+        WordSize key_word = 0;
+        unsigned shift = numeric_limits<WordSize>::digits - 8;
+        for (unsigned c = 0; c < sizeof(WordSize); c++, shift -= 8)
+            key_word |= (WordSize) key_padded[i + c] << shift;
         key_words.push_back(key_word);
     }
 
