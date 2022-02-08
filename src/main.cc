@@ -11,7 +11,7 @@ using namespace chrono;
 template<typename T> ostream& operator<<(ostream& output, vector<T> const& values)
 {
     for (auto const& value : values) {
-        output << setfill('0') << setw(16) << hex << value << " ";
+        output << setfill('0') << setw(numeric_limits<T>::digits / 4) << hex << value << " ";
     }
     return output;
 }

@@ -33,7 +33,7 @@ template<typename WordSize> vector<WordSize> key_to_words(const string& key)
         WordSize key_word = 0;
         unsigned shift = numeric_limits<WordSize>::digits - 8;
         for (unsigned c = 0; c < sizeof(WordSize); c++, shift -= 8)
-            key_word |= key_padded[i + c] << shift;
+            key_word |= (WordSize) key_padded[i + c] << shift;
         key_words.push_back(key_word);
     }
 
