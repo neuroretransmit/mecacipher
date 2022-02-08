@@ -106,13 +106,16 @@ template<size_t StateSize> class AbstractMECA
             _permutations[permutations[i]] = i;
 
         // Split start state into pre-initial/initial conditions
-        uint64_t mask = (StateSize == 32 ? uint32_t(~uint32_t(0)) : uint64_t(~uint64_t(0)));
+        bitset<StateSize* 2> mask = (StateSize == 32 ? uint32_t(~uint32_t(0)) : uint64_t(~uint64_t(0)));
+
+        // TODO: Convert logic to handle a 128-bit state or pass to constructor split
+        //       (to_ullong() is 64 bits on most platforms)
         if (!reverse) {
-            _prev = start_state.to_ullong() >> StateSize;
-            _state = start_state.to_ullong() & mask;
+            _prev = (start_state >> StateSize).to_ullong();
+            _state = (start_state & mask).to_ullong();
         } else {
-            _prev = start_state.to_ullong() & mask;
-            _state = start_state.to_ullong() >> StateSize;
+            _prev = (start_state & mask).to_ullong();
+            _state = (start_state >> StateSize).to_ullong();
         }
     }
 
@@ -139,6 +142,31 @@ template<> class MECA<32, BOUNDARY_PERIODIC> : public AbstractMECA<32>
     void step(unsigned rule) override
     {
         bitset<32> new_state;
+
+        for (unsigned cell = 0; cell < _state.size(); cell++) {
+            bitset<3> neighborhood = periodic_neighborhood(cell);
+            bool first_order_state = (rule >> _permutations[neighborhood]) & 1;
+            new_state[cell] = _prev[cell] != first_order_state ? true : false;
+        }
+
+        _prev = _state;
+        _state = new_state;
+    }
+};
+
+/// @brief 64-bit, periodic boundary, elementary second-order cellular automata
+template<> class MECA<64, BOUNDARY_PERIODIC> : public AbstractMECA<64>
+{
+  public:
+    MECA(const bitset<128>& start_state, bool reverse = false) : AbstractMECA<64>(start_state, reverse) {}
+
+    /**
+     * @brief evolve @rule for one timestep
+     * @param rule rule number
+     */
+    void step(unsigned rule) override
+    {
+        bitset<64> new_state;
 
         for (unsigned cell = 0; cell < _state.size(); cell++) {
             bitset<3> neighborhood = periodic_neighborhood(cell);
