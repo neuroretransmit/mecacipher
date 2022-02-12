@@ -8,6 +8,8 @@
 
 using namespace chrono;
 
+using WordSizes = ::testing::Types<uint16_t, uint32_t, uint64_t>;
+
 template<typename T> ostream& operator<<(ostream& output, vector<T> const& values)
 {
     for (auto const& value : values)
@@ -15,98 +17,46 @@ template<typename T> ostream& operator<<(ostream& output, vector<T> const& value
     return output;
 }
 
-TEST(MECACipher, Crypt64)
+/* Fixtures */
+template <typename T>
+class SmokeTest : public ::testing::Test {
+ public:
+  static T shared_;
+  T value_;
+};
+
+/* Suites */
+TYPED_TEST_SUITE(SmokeTest, WordSizes, );
+
+/* Parameterized test for different word sizes */
+TYPED_TEST(SmokeTest, EncryptDecrypt)
 {
-    MECACipher<uint16_t, 15> cipher;
+    MECACipher<TypeParam, 15> cipher;
     string key = "My crime is that of curiosity";
 
-    vector<uint16_t> plaintext{0x1337, 0x1337, 0x1337, 0x1337};
-    vector<uint16_t> key_words = key_to_words<uint16_t>(key);
-    vector<uint16_t> key_schedule = cipher.schedule_keys(key_words);
+    vector<TypeParam> plaintext{0x1337, 0x1337, 0x1337, 0x1337};
+    vector<TypeParam> key_words = key_to_words<TypeParam>(key);
+    vector<TypeParam> key_schedule = cipher.schedule_keys(key_words);
 
     // Encrypt
     auto enc_start = high_resolution_clock::now();
-    vector<uint16_t> encrypted = cipher.encrypt(plaintext, key_schedule);
+    vector<TypeParam> encrypted = cipher.encrypt(plaintext, key_schedule);
     auto enc_stop = high_resolution_clock::now();
     auto enc_duration = duration_cast<microseconds>(enc_stop - enc_start);
 
     // Decrypt
     auto dec_start = high_resolution_clock::now();
-    vector<uint16_t> decrypted = cipher.decrypt(encrypted, key_schedule);
+    vector<TypeParam> decrypted = cipher.decrypt(encrypted, key_schedule);
     auto dec_stop = high_resolution_clock::now();
     auto dec_duration = duration_cast<microseconds>(dec_stop - dec_start);
 
-    cout << "plaintext: " << plaintext << endl;
-    cout << "key      : " << key_words << endl;
-    cout << "encrypted: " << encrypted << endl;
-    cout << "decrypted: " << decrypted << endl;
+    cout << "PLAINTEXT: " << plaintext << endl;
+    cout << "KEY      : " << key_words << endl;
+    cout << "ENCRYPTED: " << encrypted << endl;
+    cout << "DECRYPTED: " << decrypted << endl;
 
     cout.unsetf(ios::hex);
-    cout << "enc time : " << enc_duration.count() << " microseconds" << endl;
-    cout << "dec time : " << dec_duration.count() << " microseconds" << endl;
-    ASSERT_EQ(plaintext, decrypted);
-}
-
-TEST(MECACipher, Crypt128)
-{
-    MECACipher<uint32_t, 15> cipher;
-    string key = "My crime is that of curiosity";
-
-    vector<uint32_t> plaintext{0x1337, 0x1337, 0x1337, 0x1337};
-    vector<uint32_t> key_words = key_to_words<uint32_t>(key);
-    vector<uint32_t> key_schedule = cipher.schedule_keys(key_words);
-
-    // Encrypt
-    auto enc_start = high_resolution_clock::now();
-    vector<uint32_t> encrypted = cipher.encrypt(plaintext, key_schedule);
-    auto enc_stop = high_resolution_clock::now();
-    auto enc_duration = duration_cast<microseconds>(enc_stop - enc_start);
-
-    // Decrypt
-    auto dec_start = high_resolution_clock::now();
-    vector<uint32_t> decrypted = cipher.decrypt(encrypted, key_schedule);
-    auto dec_stop = high_resolution_clock::now();
-    auto dec_duration = duration_cast<microseconds>(dec_stop - dec_start);
-
-    cout << "plaintext: " << plaintext << endl;
-    cout << "key      : " << key_words << endl;
-    cout << "encrypted: " << encrypted << endl;
-    cout << "decrypted: " << decrypted << endl;
-
-    cout.unsetf(ios::hex);
-    cout << "enc time : " << enc_duration.count() << " microseconds" << endl;
-    cout << "dec time : " << dec_duration.count() << " microseconds" << endl;
-    ASSERT_EQ(plaintext, decrypted);
-}
-
-TEST(MECACipher, Crypt256)
-{
-    MECACipher<uint64_t, 15> cipher;
-    string key = "My crime is that of curiosity";
-
-    vector<uint64_t> plaintext{0x1337, 0x1337, 0x1337, 0x1337};
-    vector<uint64_t> key_words = key_to_words<uint64_t>(key);
-    vector<uint64_t> key_schedule = cipher.schedule_keys(key_words);
-
-    // Encrypt
-    auto enc_start = high_resolution_clock::now();
-    vector<uint64_t> encrypted = cipher.encrypt(plaintext, key_schedule);
-    auto enc_stop = high_resolution_clock::now();
-    auto enc_duration = duration_cast<microseconds>(enc_stop - enc_start);
-
-    // Decrypt
-    auto dec_start = high_resolution_clock::now();
-    vector<uint64_t> decrypted = cipher.decrypt(encrypted, key_schedule);
-    auto dec_stop = high_resolution_clock::now();
-    auto dec_duration = duration_cast<microseconds>(dec_stop - dec_start);
-
-    cout << "plaintext: " << plaintext << endl;
-    cout << "key      : " << key_words << endl;
-    cout << "encrypted: " << encrypted << endl;
-    cout << "decrypted: " << decrypted << endl;
-
-    cout.unsetf(ios::hex);
-    cout << "enc time : " << enc_duration.count() << " microseconds" << endl;
-    cout << "dec time : " << dec_duration.count() << " microseconds" << endl;
+    cout << "ENC TIME : " << enc_duration.count() << " microseconds" << endl;
+    cout << "DEC TIME : " << dec_duration.count() << " microseconds" << endl;
     ASSERT_EQ(plaintext, decrypted);
 }
