@@ -56,6 +56,7 @@ template<typename WordSize, size_t Rounds> class MECACipher
   public:
     /**
      * @brief create key schedule using globally chaotic (class 4) elementary CA rules
+     * @param key key generating key
      * @return vector of words to xor with previous and current state
      */
     vector<WordSize> schedule_keys(const vector<WordSize>& key)
@@ -73,10 +74,18 @@ template<typename WordSize, size_t Rounds> class MECACipher
         for (unsigned s = 1, i = 0, j = 0; s < iterations;
              s++, i += 1 % num_keys - 1, j += 1 % key.size() - 1) {
             // Evolve supplied key using globally chaotic (class 4) rules
-            CA<numeric_limits<WordSize>::digits, BOUNDARY_PERIODIC> ca(key[j]);
-            ca.step(54);
-            ca.step(110);
-            ca.step(137);
+            CA<numeric_limits<WordSize>::digits, BOUNDARY_PERIODIC> ca(key[j] ^ keys[i]);
+            switch (ca.state().to_ullong() % 3) {
+            case 0:
+                ca.step(54);
+                break;
+            case 1:
+                ca.step(110);
+                break;
+            case 2:
+                ca.step(137);
+                break;
+            }
             keys[i] = ca.state().to_ullong();
         }
 
@@ -87,6 +96,7 @@ template<typename WordSize, size_t Rounds> class MECACipher
      * @brief encrypt a block
      * @param plaintext a block of plaintext
      * @param round_keys the key schedule
+     * @return block of cipher text
      */
     vector<WordSize> encrypt(const vector<WordSize>& plaintext, const vector<WordSize>& round_keys)
     {
@@ -115,6 +125,7 @@ template<typename WordSize, size_t Rounds> class MECACipher
      * @brief decrypt a block
      * @param ciphertext a block of ciphertext
      * @param round_keys the key schedule
+     * @return block of plaintext
      */
     vector<WordSize> decrypt(const vector<WordSize>& ciphertext, const vector<WordSize>& round_keys)
     {
