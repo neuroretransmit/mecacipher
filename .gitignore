@@ -1,2 +1,4 @@
 *.kdev4
-mecacipher
+build/
+CMakeLists.txt.user
+
