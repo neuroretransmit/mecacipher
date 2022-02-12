@@ -75,31 +75,42 @@ Properties of Second-Order Memory Elementary Cellular Automata*)
 
 ## Output
 
-Configured for 15 rounds with 128-bit block size
+Configured for 15 rounds
+
+**64-bit block size**
 
 ```
-plaintext: 00001337 00001337 00001337 00001337
-key      : 4d792063 72696d65 20697320 74686174 206f6620 63757269 6f736974 79000000
-encrypted: 09caccda d1c7bf5a 30d6a330 89ceacc6
-decrypted: 00001337 00001337 00001337 00001337
-enc time : 46 microseconds
-dec time : 43 microseconds
+PLAINTEXT: 1337 1337 1337 1337
+KEY      : 4d79 2063 7269 6d65 2069 7320 7468 6174 206f 6620 6375 7269 6f73 6974 7900
+ENCRYPTED: ee1c fa14 68e1 51c8
+DECRYPTED: 1337 1337 1337 1337
+ENC TIME : 37 microseconds
+DEC TIME : 33 microseconds
 ```
 
-Configured for 15 rounds with 256-bit block size
-
+**128-bit block size**
 ```
-plaintext: 0000000000001337 0000000000001337 0000000000001337 0000000000001337
-key      : 4d79206372696d65 2069732074686174 206f662063757269 6f73697479000000
-encrypted: f93c3f9aa190830e 26cc1764f2b1e672 fce9cc8a79d8a855 1425184e184832b8
-decrypted: 0000000000001337 0000000000001337 0000000000001337 0000000000001337
-enc time : 86 microseconds
-dec time : 81 microseconds
+PLAINTEXT: 00001337 00001337 00001337 00001337
+KEY      : 4d792063 72696d65 20697320 74686174 206f6620 63757269 6f736974 79000000
+ENCRYPTED: d93041ec e3fa5b94 01a2df58 71ca05ab
+DECRYPTED: 00001337 00001337 00001337 00001337
+ENC TIME : 47 microseconds
+DEC TIME : 35 microseconds
+```
+
+**256-bit block size**
+```
+PLAINTEXT: 0000000000001337 0000000000001337 0000000000001337 0000000000001337
+KEY      : 4d79206372696d65 2069732074686174 206f662063757269 6f73697479000000
+ENCRYPTED: e72d26f7318d3da2 0ec874868d14ac9b 7d91e0e34ee12d46 0fd1e08f367ad342
+DECRYPTED: 0000000000001337 0000000000001337 0000000000001337 0000000000001337
+ENC TIME : 78 microseconds
+DEC TIME : 61 microseconds
 ```
 
 ## Future plans
 
-- [ ] Metamorphic engine for key scheduling (xor, add, subtract, invert, etc)
+- [ ] Metamorphic engine for key-generating-key combination with key schedule (xor, add, subtract, invert, etc)
 
 ## References
 
