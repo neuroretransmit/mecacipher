@@ -1,4 +1,7 @@
 *.kdev4
 build/
 CMakeLists.txt.user
-
+doc/*.pdf
+doc/*.log
+doc/*.gz
+doc/*.aux

@@ -1,0 +1,55 @@
+\documentclass{article}
+
+\usepackage[left=3cm,right=3cm,top=4cm,bottom=3cm]{geometry}
+
+\title{\textbf{The MECA Block Cipher}}
+\author{John Holly}
+\date{\today}
+
+\thispagestyle{plain}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\centering\begin{minipage}{\dimexpr\paperwidth-10cm}
+\hspace*{10mm}I introduce a novel metamorphic block cipher designed to utilize the cryptographic properties of second-order cellular automata. The metamorphic engine creates a data-dependent rule selection for CA evolution during encryption/decryption rounds. 
+\end{minipage}
+\end{abstract}
+
+\bigskip
+
+\section{Introduction}
+\hspace*{10mm}%MECA is a new block cipher exploring the use of second-order cellular automata in place of conventional feistel-based ciphers.
+	The design of MECA is heavily influenced by RC6\cite{RC6} and the metamorphic SC-192\cite{SC-192}. It borrows a modified version of RC6's key scheduling algorithm using chaotic (class 4) elementary CA rules in place of it's standard binary operations. The metamorphic engine selects the rule to use for the second-order cellular automata evolution steps dependent on the data (CA state) during that round of encryption/decryption.
+
+\section{Details}
+
+\section{Key Schedule}
+
+\section{Encryption and Decryption}
+
+\section{Performance}
+
+\section{Implementation Issues}
+
+\section{Design and Motivation}
+
+\section{Security}
+
+\section{Flexibility and Future Direction}
+
+\section{Conclusions}
+
+\section{Acknowledgements}
+
+\begin{thebibliography}{unsrt}
+  \bibitem{RC6}
+  Ronald L. Rivest, M.J.B. Robshaw, R. Sidney, and Y.L. Yin, \emph{The RC6\texttrademark Block Cipher} (First Advanced Encryption Standard (AES) Conference, USA, 1998).
+  \bibitem{SC-192}
+  Magdy Saeb, \emph{The Stone Cipher-192 (SC-192): A Metamorphic Cipher} (IJCNS) International Journal of Computer and Network Security, 2009
+  \bibitem{MECA-Properties}
+  A. H. Encinas, A. M. d. Rey, J. L. P. Iglesias, G. R. Sánchez and A. Q. Dios, \emph{Cryptographic Properties of Second-Order Memory Elementary Cellular Automata} 2008 Third International Conference on Availability, Reliability and Security, 2008, pp. 741-745, doi: 10.1109/ARES.2008.114.
+\end{thebibliography}
+\end{document}
