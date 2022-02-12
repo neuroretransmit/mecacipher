@@ -127,38 +127,13 @@ template<size_t StateSize> class AbstractMECA
     virtual void step(unsigned rule) = 0;
 };
 
-template<size_t StateSize, boundary_t Boundary> class MECA;
-
-/// @brief 32-bit, periodic boundary, elementary second-order cellular automata
-template<> class MECA<32, BOUNDARY_PERIODIC> : public AbstractMECA<32>
+template<size_t StateSize, boundary_t Boundary> class MECA : public AbstractMECA<StateSize>
 {
   public:
-    MECA(const bitset<64>& start_state, bool reverse = false) : AbstractMECA<32>(start_state, reverse) {}
-
-    /**
-     * @brief evolve @rule for one timestep
-     * @param rule rule number
-     */
-    void step(unsigned rule) override
+    MECA(const bitset<StateSize * 2>& start_state, bool reverse = false)
+        : AbstractMECA<StateSize>(start_state, reverse)
     {
-        bitset<32> new_state;
-
-        for (unsigned cell = 0; cell < _state.size(); cell++) {
-            bitset<3> neighborhood = periodic_neighborhood(cell);
-            bool first_order_state = (rule >> _permutations[neighborhood]) & 1;
-            new_state[cell] = _prev[cell] != first_order_state ? true : false;
-        }
-
-        _prev = _state;
-        _state = new_state;
     }
-};
-
-/// @brief 64-bit, periodic boundary, elementary second-order cellular automata
-template<> class MECA<64, BOUNDARY_PERIODIC> : public AbstractMECA<64>
-{
-  public:
-    MECA(const bitset<128>& start_state, bool reverse = false) : AbstractMECA<64>(start_state, reverse) {}
 
     /**
      * @brief evolve @rule for one timestep
@@ -166,15 +141,15 @@ template<> class MECA<64, BOUNDARY_PERIODIC> : public AbstractMECA<64>
      */
     void step(unsigned rule) override
     {
-        bitset<64> new_state;
+        bitset<StateSize> new_state;
 
-        for (unsigned cell = 0; cell < _state.size(); cell++) {
-            bitset<3> neighborhood = periodic_neighborhood(cell);
-            bool first_order_state = (rule >> _permutations[neighborhood]) & 1;
-            new_state[cell] = _prev[cell] != first_order_state ? true : false;
+        for (unsigned cell = 0; cell < this->_state.size(); cell++) {
+            bitset<3> neighborhood = this->periodic_neighborhood(cell);
+            bool first_order_state = (rule >> this->_permutations[neighborhood]) & 1;
+            new_state[cell] = this->_prev[cell] != first_order_state ? true : false;
         }
 
-        _prev = _state;
-        _state = new_state;
+        this->_prev = this->_state;
+        this->_state = new_state;
     }
 };

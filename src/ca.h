@@ -109,13 +109,10 @@ template<size_t StateSize> class AbstractCA
     virtual void step(unsigned rule) = 0;
 };
 
-template<size_t StateSize, boundary_t Boundary> class CA;
-
-/// 32-bit, periodic boundary elementary cellular automata
-template<> class CA<32, BOUNDARY_PERIODIC> : public AbstractCA<32>
+template<size_t StateSize, boundary_t Boundary> class CA : public AbstractCA<StateSize>
 {
   public:
-    CA(const bitset<32>& start_state) : AbstractCA<32>(start_state) {}
+    CA(const bitset<StateSize>& start_state) : AbstractCA<StateSize>(start_state) {}
 
     /**
      * @brief evolve @rule for one timestep
@@ -123,36 +120,13 @@ template<> class CA<32, BOUNDARY_PERIODIC> : public AbstractCA<32>
      */
     void step(unsigned rule) override
     {
-        bitset<32> new_state;
+        bitset<StateSize> new_state;
 
-        for (unsigned cell = 0; cell < _state.size(); cell++) {
-            bitset<3> neighborhood = periodic_neighborhood(cell);
-            new_state[cell] = (rule >> _permutations[neighborhood]) & 1;
+        for (unsigned cell = 0; cell < this->_state.size(); cell++) {
+            bitset<3> neighborhood = this->periodic_neighborhood(cell);
+            new_state[cell] = (rule >> this->_permutations[neighborhood]) & 1;
         }
 
-        _state = new_state;
-    }
-};
-
-/// 64-bit, periodic boundary elementary cellular automata
-template<> class CA<64, BOUNDARY_PERIODIC> : public AbstractCA<64>
-{
-  public:
-    CA(const bitset<64>& start_state) : AbstractCA<64>(start_state) {}
-
-    /**
-     * @brief evolve @rule for one timestep
-     * @param rule rule number
-     */
-    void step(unsigned rule) override
-    {
-        bitset<64> new_state;
-
-        for (unsigned cell = 0; cell < _state.size(); cell++) {
-            bitset<3> neighborhood = periodic_neighborhood(cell);
-            new_state[cell] = (rule >> _permutations[neighborhood]) & 1;
-        }
-
-        _state = new_state;
+        this->_state = new_state;
     }
 };
