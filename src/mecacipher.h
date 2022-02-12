@@ -28,7 +28,7 @@ template<typename WordSize, size_t Rounds> class MECACipher
      */
     void morph(MECA<numeric_limits<WordSize>::digits, BOUNDARY_PERIODIC>& meca)
     {
-        switch (meca.state().to_ullong() % 6) {
+        switch (meca.state().to_ullong() % 7) {
         case 0:
             meca.step(75);
             break;
@@ -46,6 +46,9 @@ template<typename WordSize, size_t Rounds> class MECACipher
             break;
         case 5:
             meca.step(173);
+            break;
+        case 6:
+            meca.step(229);
             break;
         }
     }
@@ -85,7 +88,7 @@ template<typename WordSize, size_t Rounds> class MECACipher
      * @param plaintext a block of plaintext
      * @param round_keys the key schedule
      */
-    vector<WordSize> encrypt(const vector<WordSize>& plaintext, vector<WordSize>& round_keys)
+    vector<WordSize> encrypt(const vector<WordSize>& plaintext, const vector<WordSize>& round_keys)
     {
         const size_t bitsize = numeric_limits<WordSize>::digits;
         vector<WordSize> output_block(4);
