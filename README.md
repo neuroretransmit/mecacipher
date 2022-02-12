@@ -2,12 +2,76 @@
 
 A chaos-based, metamorphic block cipher based on second-order cellular automata (MECA).
 
-* 128 or 256-bit block size
+* Fully templated to accomodate block-sizes of up to 256 bits (64/128/256 bits have been tested)
 * Key size of up to 255 bytes
+    * Metamorphically evolved key schedule using globally chaotic (class 4) rules of elementary CA (irreversible)
 * Metamorphic engine to select second-order rules to evolve based on incoming data
 * Configurable rounds for added security
-* Key scheduling using a modified version of RC6's scheduling algorithm
-    - Globally chaotic (class 4) rules of elementary CA (irreversible) evolve the key
+
+## Key Schedule
+
+The key schedule has been adapted from RC6's algorithm, you will find it using the same magic
+constants with 4 less words if the number of desired keys is greater than the key generating
+key length.
+
+**Magic constants**
+
+* Let P = the binary expansion of Euler's number - 2
+
+* Let Q = the binary expansion of the golden ratio - 1
+
+The schedule is initialized with the first element set to P. The rest of the schedule is initialized 
+additively using the previous key + Q. For 3 * max(key length, num_keys) iterations, the keys XORed 
+with the key-generating-key and metamorphically evolved using irreversible class 4 elementary cellular 
+automata rules (54, 110, and 137).
+
+### Rule 54
+
+![Rule 54](img/key-schedule/54.png)
+
+### Rule 110
+
+![Rule 110](img/key-schedule/110.png)
+
+### Rule 137
+
+![Rule 137](img/key-schedule/137.png)
+
+## Metamorphic Engine
+
+The metamorphic engine selects rules for the second-order automata given the state of the
+CA during a given encryption/decryption round. These rules have been selected based on their
+sensitivity to initial conditions and differential cryptanalysis (see *Cryptographic 
+Properties of Second-Order Memory Elementary Cellular Automata*)
+
+### Rule 75
+
+![Rule 75](img/metamorphic-engine/75.png)
+
+### Rule 86
+
+![Rule 86](img/metamorphic-engine/86.png)
+
+### Rule 89
+
+![Rule 89](img/metamorphic-engine/89.png)
+
+### Rule 149
+
+![Rule 149](img/metamorphic-engine/149.png)
+
+### Rule 166
+
+![Rule 166](img/metamorphic-engine/166.png)
+
+### Rule 173
+
+![Rule 173](img/metamorphic-engine/173.png)
+
+### Rule 229
+
+![Rule 229](img/metamorphic-engine/229.png)
+
 
 ## Output
 
