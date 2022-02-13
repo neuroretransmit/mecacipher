@@ -54,6 +54,14 @@ There are two metamorphic engines in use, one using irreversible first-order CA 
 
 The first-order CLU selects a class 4 elementary CA rule based on the remainder ($mod$ 3) of the key-generating-key word at index $i$ of a specific iteration in the scheduling algorithm XORed with the current key schedule key at index $j$. The mappings are shown in table \ref{tab:table1} and the rules are shown evolved with random initial conditions in figures \ref{fig:figure1}, \ref{fig:figure2}, \ref{fig:figure3}.
 
+The metamorphic engine for CA rule selection is defined by the piecewise function below.
+
+$$
+  m(x) = \cases{ 54  & $x$ $mod$ $3 = 0$ \cr
+                 110 & $x$ $mod$ $3 = 1$ \cr
+                 137 & $x$ $mod$ $3 = 2$ }
+$$
+
 \begin{table}[h!]
   \begin{center}
     \caption{First-order CLU mapping}
@@ -170,13 +178,7 @@ The second-order CLU selects a chaotic second-order rule based on the remainder 
 
 \subsection{Key Schedule}
 
-The key schedule uses the same magic constants for initialization as RC6. Let $P$ be the binary expansion of $e-2$ and $Q$ is the binary expansion of $\varphi-1$, where $\varphi$ is the golden ratio. The metamorphic engine for CA rule selection is defined by the piecewise function below.
-
-$$
-  m(x) = \cases{ 54  & $x$ $mod$ $3 = 0$ \cr
-                 110 & $x$ $mod$ $3 = 1$ \cr
-                 137 & $x$ $mod$ $3 = 2$ }
-$$
+The key schedule uses the same magic constants for initialization as RC6. Let $P$ be the binary expansion of $e-2$ and $Q$ is the binary expansion of $\varphi-1$, where $\varphi$ is the golden ratio.
 
 The function for the outcome of a single timestep with a given rule is defined by the function below. Let $m(x)$ be the desired rule and $c(S_i, m(x))$ is the execution of the elementary CA, where $S_i$ is the resulting round key (for a given iteration).
 
