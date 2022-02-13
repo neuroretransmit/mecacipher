@@ -46,13 +46,27 @@ Similarly to RC5 and RC6, MECA is fully parameterized and can be specified as ME
 
 \subsection{Cellular automata}
 
-\subsubsection{First-order}
+For all CAs (first and second-order) in this paper, consider cells having two states - 0 or 1. The boundary condition is periodic in both cases.
 
-A CA can be described as a quadruple $(\mathcal{L},\mathcal{S},\mathcal{N},f)$, where $\mathcal{L}$ is the cellular space (state size) in one dimension, $\mathcal{S}$ is the finite set of states, $\mathcal{N} = (\vec{v_1}, \vec{v_2}, ..., \vec{v_m})$ is the association of a single cell's neighborhood of $m$ cells (including the cell itself) within $\mathcal{L}$, $f: \mathcal{S}^{m}\rightarrow\mathcal{S}$ is the local transition rule of the CA.
+\subsubsection{First-order (CA)}
 
-TODO: Define the local transition of an elementary CA. Should I define as an algorithm?
+An elementary CA can be described as a quadruple $(\mathcal{L},\mathcal{S},\mathcal{N},f)$, where $\mathcal{L}$ is the cellular space (state size) in one dimension, $\mathcal{S}$ is the finite set of states, $\mathcal{N} = (\vec{v_1}, \vec{v_2}, ..., \vec{v_m})$ is the association of a single cell's neighborhood of $m$ cells (including the cell itself) within $\mathcal{L}$, $f: \mathcal{S}^{m}\rightarrow\mathcal{S}$ is the local transition rule of the CA.
 
-\subsubsection{Second-order}
+Let $r$ be the rule number selected where $r$ is between 0 and 255, $\mathcal{P}$ is the set of all permutations for a given neighborhood size where $\mathcal{N} \ni \mathcal{P}$, $i$ is the index of $\mathcal{N}$ in $\mathcal{P}$.
+
+$$
+  \mathcal{S}^{m}\rightarrow\mathcal{S} = f(\mathcal{N}, r)
+$$
+
+The local transition is defined as the selected rule number bit-shifted right by the index of the $\mathcal{N}$ in $\mathcal{P}$ ANDed with 1.
+
+$$
+  f(\mathcal{N}, r) = r \gg i \mathbin{\&} 1
+$$
+
+\subsubsection{Second-order (MECA)}
+
+A second-order CA is defined similarly, with the exception of it tracking two timesteps $\mathcal{S}_t$ and $\mathcal{S}_{t-1}$. The second-order local-transition is an extension of the definition of $f$ above. If the cell in $\mathcal{S}_{t-1} \ne f$ then the cell is set to 1, otherwise 0.
 
 \subsection{Metamorphic Engines (CLUs)}
 
