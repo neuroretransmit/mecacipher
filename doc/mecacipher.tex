@@ -44,6 +44,16 @@ The MECA cipher was designed to be simplistic and easily understood to those wit
 
 Similarly to RC5 and RC6, MECA is fully parameterized and can be specified as MECA-$w$/$r$/$b$ with the word size (registers) being $w$ bits, $r$ encryption rounds, and $b$ bytes in the encryption key. Metamorphic logic units and cellular automata (both first-order and second-order) are the primitive building blocks throughout the cipher. Much like feistel networks can be run in reverse with the same logic as forwards, MECAs can be run in reverse by simply swapping the pre-initial and initial states (the previous and current timesteps [state] of the cellular automata) the forward pass (encryption) converged to.
 
+\subsection{Cellular automata}
+
+\subsubsection{First-order}
+
+A CA can be described as a quadruple $(\mathcal{L},\mathcal{S},\mathcal{N},f)$, where $\mathcal{L}$ is the cellular space (state size) in one dimension, $\mathcal{S}$ is the finite set of states, $\mathcal{N} = (\vec{v_1}, \vec{v_2}, ..., \vec{v_m})$ is the association of a single cell's neighborhood of $m$ cells (including the cell itself) within $\mathcal{L}$, $f: \mathcal{S}^{m}\rightarrow\mathcal{S}$ is the local transition rule of the CA.
+
+TODO: Define the local transition of an elementary CA. Should I define as an algorithm?
+
+\subsubsection{Second-order}
+
 \subsection{Metamorphic Engines (CLUs)}
 
 TODO: Will there be three metamorphic engines? One for the binop of combining key with plaintext.
@@ -229,6 +239,8 @@ $$
 \section{Acknowledgements}
 
 \begin{thebibliography}{unsrt}
+  \bibitem{class-4}
+  Dhar, Avinash and Lakdawala, Porus and Mandal, Gautam and Wadia, Spenta, \emph{Universal Cellular Automata and Class 4}, 1994
   \bibitem{RC6}
   Ronald L. Rivest, M.J.B. Robshaw, R. Sidney, and Y.L. Yin, \emph{The RC6\texttrademark Block Cipher} (First Advanced Encryption Standard (AES) Conference, USA, 1998).
   \bibitem{SC-192}
