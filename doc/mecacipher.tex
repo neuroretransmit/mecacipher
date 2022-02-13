@@ -1,12 +1,15 @@
 \documentclass{article}
 
 \usepackage[left=3cm,right=3cm,top=4cm,bottom=3cm]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
 
 \title{\textbf{The MECA Block Cipher}}
 \author{John Holly}
 \date{\today}
 
 \thispagestyle{plain}
+\graphicspath{ {../img/key-schedule}{../img/metamorphic-engine} }
 
 \begin{document}
 
@@ -40,7 +43,7 @@ There are two metamorphic engines in use, one using irreversible first-order CA 
 
 \subsubsection{First-order CLU}
 
-The first-order CLU selects a class 4 elementary CA rule based on the remainder ($mod$ 3) of the key-generating-key word at index $i$ of a specific iteration in the scheduling algorithm XORed with the current key schedule key at index $j$. The mappings are shown in table \ref{tab:table1}.
+The first-order CLU selects a class 4 elementary CA rule based on the remainder ($mod$ 3) of the key-generating-key word at index $i$ of a specific iteration in the scheduling algorithm XORed with the current key schedule key at index $j$. The mappings are shown in table \ref{tab:table1} and the rules are shown evolved with random initial conditions in figures \ref{fig:figure1}, \ref{fig:figure2}, \ref{fig:figure3}.
 
 \begin{table}[h!]
   \begin{center}
@@ -55,6 +58,26 @@ The first-order CLU selects a class 4 elementary CA rule based on the remainder 
     \end{tabular}
   \end{center}
 \end{table}
+
+\begin{figure}[H]
+	\caption{Rule 54}
+	\label{fig:figure1}
+	\centering
+	\includegraphics[scale=.75]{54.png}
+\end{figure}
+\begin{figure}[H]
+	\caption{Rule 110}
+	\label{fig:figure2}
+	\centering
+	\includegraphics[scale=.75]{110.png}
+\end{figure}
+\begin{figure}[H]
+	\caption{Rule 137}
+	\label{fig:figure3}
+	\centering
+	\includegraphics[scale=.75]{137.png}
+\end{figure}
+
 
 \subsubsection{Second-order CLU}
 
