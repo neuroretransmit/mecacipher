@@ -204,7 +204,7 @@ The second-order CLU selects a chaotic second-order rule based on the remainder 
 
 The key schedule uses the same magic constants for initialization as RC6. Let $P$ be the binary expansion of $e-2$ and $Q$ is the binary expansion of $\varphi-1$, where $\varphi$ is the golden ratio.
 
-The function for the outcome of a single timestep with a given rule is defined by the function below. Let $m(x)$ be the desired rule and $c(S_i, m(x))$ is the execution of the elementary CA, where $S_i$ is the resulting round key (for a given iteration).
+The function for the outcome of a single CA timestep with a given rule is defined by the function below. Let $m(x)$ be the desired metamorphic rule and $c(S_i, m(x))$ is the execution of the elementary CA, where $S_i$ is the resulting round key (for a given iteration).
 
 $$
  S_i = c(S_i, m(x)) 
@@ -218,16 +218,16 @@ $$
       \Desc{r}{number of rounds}
     \EndInput
     \Output
-      \Desc{$S$}{$w$-bit round keys $S[0, ..., 2r - 1]$}
+      \Desc{$S$}{$w$-bit round keys $S_{0, ..., 2r - 1}$}
     \EndOutput
-    \State $S[0] = P$
+    \State $S_0 \gets P$
     \For{$i \gets 1$ to $2r-1$} 
-      \State {$S[i]$ $\gets$ {$S[i-1] + Q$}}
+      \State $S_i \gets S_{i-1} + Q$
     \EndFor
     \State $j \gets 0$
     \State $i \gets 0$
     \For{$s \gets 0$ to max(c, $2r$)}
-      \State $S[i] \gets c(S[i], m(L[j] \oplus S[i]))$ 
+      \State $S_i \gets c(S_i, m(L[j] \oplus S_i))$ 
       \State $i \gets i+1$ $mod$ $2r-1$
       \State $j \gets j+1$ $mod$ $c-1$
     \EndFor
@@ -236,7 +236,77 @@ $$
 
 \subsection{Encryption}
 
+The encryption processes takes in 4 $w$-bit words of plaintext and creates two $w$-bit MECAs ($A$ and $B$) by taking the first/last two words and using them as the initial/pre-initial states.
+
+The function for the outcome of a single MECA timestep with a given rule is defined by the function below. Let $m(x)$ be the desired metamorphic rule and $z(X, m(x))$ is the execution of the MECA.
+
+$$
+	X = z(X, m(x)) 
+$$
+
+\begin{algorithm}[H]
+  \begin{algorithmic}
+    \caption{Encryption (forward evolution) for MECA-$w$/$r$/$b$}\label{alg:encryption}
+    \Input
+      \Desc{$P$}{4 $w$-bit words of plaintext}
+      \Desc{$S$}{key schedule of 2$r$ $w$-bit words}
+    \EndInput
+    \Output
+      \Desc{$C$}{4 $w$-bit words of ciphertext}
+    \EndOutput
+    \State $A \gets P_0 \ll w \mathbin{|}  P_1$
+	\State $B \gets P_2 \ll w \mathbin{|}  P_3$
+	\State $j \gets 0$
+	\For{$i \gets 0$ to $r - 1$}
+		\State $A \gets A \oplus L_j$
+		\State $A \gets z(A, m(A))$
+		\State $B \gets B \oplus L_{j+1}$
+		\State $B \gets z(B, m(B))$
+		\State $j \gets j + 2$
+    \EndFor
+    \State $C_0 \gets A_{t-1}$
+    \State $C_1 \gets A_{t}$
+    \State $C_2 \gets B_{t-1}$
+    \State $C_3 \gets B_{t}$
+  \end{algorithmic}
+\end{algorithm}
+
 \subsection{Decryption}
+
+The decryption processes takes in 4 $w$-bit words of ciphertext and creates two $w$-bit MECAs ($A$ and $B$) by taking the first/last two words and using them as the initial/pre-initial states, they are reversed during decryption.
+
+The function for the outcome of a single MECA timestep in reverse with a given rule is defined by the function below. Let $m(x)$ be the desired metamorphic rule and $z(X, m(x))$ is the execution of the MECA.
+
+$$
+	X = z(X, m(x)) 
+$$
+
+\begin{algorithm}[H]
+  \begin{algorithmic}
+    \caption{Decryption (reverse evolution) for MECA-$w$/$r$/$b$}\label{alg:decryption}
+    \Input
+      \Desc{$C$}{4 $w$-bit words of ciphertext}
+      \Desc{$S$}{key schedule of 2$r$ $w$-bit words}
+    \EndInput
+    \Output
+      \Desc{$P$}{4 $w$-bit words of plaintext}
+    \EndOutput
+    \State $A \gets C_1 \ll w \mathbin{|}  C_0$
+	\State $B \gets C_3 \ll w \mathbin{|}  C_2$
+	\State $j \gets 2r-1$
+	\For{$i \gets 0$ to $r - 1$}
+		\State $A \gets z(A, m(A))$
+		\State $A \gets A \oplus L_j$
+		\State $B \gets z(B, m(B))$
+		\State $B \gets B \oplus L_{j+1}$
+		\State $j \gets j - 2$
+    \EndFor
+    \State $P_0 \gets A_{t-1}$
+    \State $P_1 \gets A_{t}$
+    \State $P_2 \gets B_{t-1}$
+    \State $P_3 \gets B_{t}$
+  \end{algorithmic}
+\end{algorithm}
 
 \section{Performance}
 
