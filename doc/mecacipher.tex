@@ -36,21 +36,15 @@
 
 MECA is a novel block cipher utilizing second-order cellular automata (MECA) and metamorphic engines in both encryption/decryption rounds and key scheduling.
 
-The design of MECA began with inspiration from a handful of other well known ciphers: RC6\cite{RC6} for its small size and simplicity, speed, and elegant extensibility to different word sizes, rounds, and key length, Stone Cipher-192 (SC-192)\cite{SC-192} for its crypto logic unit (metamorphic engine, or CLU), and a variety of papers I've read on novel ciphers utilizing first-order elementary cellular automata.
-
-The MECA cipher was designed to be simplistic and easily understood to those without a deep knowledge of mathematics and cryptography. The goals in mind were simplistic chaos that can be easily visualized, extensibility, efficiency in both hardware and software implementations, and exploitation of the reversibility of second-order cellular automata in place of traditional feistel networks.
-
-\section{Details}
-
-Similarly to RC5 and RC6, MECA is fully parameterized and can be specified as MECA-$w$/$r$/$b$ with the word size (registers) being $w$ bits, $r$ encryption rounds, and $b$ bytes in the encryption key. Metamorphic logic units and cellular automata (both first-order and second-order) are the primitive building blocks throughout the cipher. Much like feistel networks can be run in reverse with the same logic as forwards, MECAs can be run in reverse by simply swapping the pre-initial and initial states (the previous and current timesteps [state] of the cellular automata) the forward pass (encryption) converged to.
-
 \subsection{Cellular automata}
 
-For all CAs (first and second-order) in this paper, consider cells having two states - 0 or 1. The boundary condition is periodic in both cases.
+Cellular automata are discrete systems that undergo state transitions by iterating over each cell within the given dimensionality by means of a local transition rule. The operating area for a local transition is the cell itself and a specified number of neighbors. This sliding window across the state can be unbalanced but generally has an equal number of neighbors on either side of the target cell. For the purpose of this paper, the cellular space is one-dimensional and the neighborhood is the cell with its left and right neighbors. All CAs within this paper are two-state CAs, that is each cell is either a 1 or a 0. When the neighborhood reaches the boundary of the cellular space, a boundary condition must be put in place. For the purpose of this paper, the boundary is periodic (cyclic); borrowing a neighbor from the opposite side of the cellular state. 
 
 \subsubsection{First-order (CA)}
 
-An elementary CA can be described as a quadruple $(\mathcal{L},\mathcal{S},\mathcal{N},f)$, where $\mathcal{L}$ is the cellular space (state size) in one dimension, $\mathcal{S}$ is the finite set of states, $\mathcal{N} = (\vec{v_1}, \vec{v_2}, ..., \vec{v_m})$ is the association of a single cell's neighborhood of $m$ cells (including the cell itself) within $\mathcal{L}$, $f: \mathcal{S}^{m}\rightarrow\mathcal{S}$ is the local transition rule of the CA.
+When talking about orders of CAs, this is simply referring to the number of state transitions (timesteps) considered during a transition. First-order CAs are only aware of the current timestep. 
+
+A CA can be described as a quadruple $(\mathcal{L},\mathcal{S},\mathcal{N},f)$, where $\mathcal{L}$ is the cellular space (state size) in one dimension, $\mathcal{S}$ is the finite set of states, $\mathcal{N} = (\vec{v_1}, \vec{v_2}, ..., \vec{v_m})$ is the association of a single cell's neighborhood of $m$ cells (including the cell itself) within $\mathcal{L}$, $f: \mathcal{S}^{m}\rightarrow\mathcal{S}$ is the local transition rule of the CA.
 
 Let $r$ be the rule number selected where $r$ is between 0 and 255, $\mathcal{P}$ is the set of all permutations for a given neighborhood size where $\mathcal{N} \ni \mathcal{P}$, $i$ is the index of $\mathcal{N}$ in $\mathcal{P}$.
 
@@ -66,13 +60,25 @@ $$
 
 \subsubsection{Second-order (MECA)}
 
-A second-order CA is defined similarly, with the exception of it tracking two timesteps $\mathcal{S}_t$ and $\mathcal{S}_{t-1}$. The second-order local-transition is an extension of the definition of $f$ above. If the cell in $\mathcal{S}_{t-1} \ne f$ then the cell is set to 1, otherwise 0.
+A second-order CA is defined similarly, with the exception of it tracking two timesteps $\mathcal{S}_t$ and $\mathcal{S}_{t-1}$. The second-order local transition is an extension of the definition of the first-order $f$ above. If the cell in $\mathcal{S}_{t-1} \ne f$ then the cell is set to 1, otherwise 0.
 
 \subsection{Metamorphic Engines (CLUs)}
 
 TODO: Will there be three metamorphic engines? One for the binop of combining key with plaintext.
 
+Metamorphism is a process that occurs in rocks where transformation to a rock of a different composition occurs. The data-dependent transformations in CA and MECA make this seem like a fitting nomenclature.
+
 There are two metamorphic engines in use, one using irreversible first-order CA rules as a one-way hashing function for the key-generating-key (unscheduled, the one of $b$ bytes specified as a parameter), and one used during encryption/decryption rounds selecting the second-order rules per round. The first-order engine selects from 3 class 4 elementary CA rules. The second-order engine selects from 7 cherry-picked rules that also display globally chaotic behavior\cite{MECA-Properties}.
+
+\section{Design and Motivation}
+
+The design of MECA began with inspiration from a handful of other well known ciphers: RC6\cite{RC6} for its small size and simplicity, speed, and elegant extensibility to different word sizes, rounds, and key length, Stone Cipher-192 (SC-192)\cite{SC-192} for its crypto logic unit (metamorphic engine, or CLU), and a variety of papers I've read on novel ciphers utilizing first-order elementary cellular automata.
+
+The MECA cipher was designed to be simplistic and easily understood to those without a deep knowledge of mathematics and cryptography from an implementation standpoint. The goals in mind were simplistic chaos that can be easily visualized, extensibility, efficiency in both hardware and software implementations, and exploitation of the reversibility of second-order cellular automata in place of traditional feistel networks.
+
+\section{Details}
+
+Similarly to RC5 and RC6, MECA is fully parameterized and can be specified as MECA-$w$/$r$/$b$ with the word size (registers) being $w$ bits, $r$ encryption rounds, and $b$ bytes in the encryption key. Metamorphic logic units and cellular automata (both first-order and second-order) are the primitive building blocks throughout the cipher. Much like feistel networks can be run in reverse with the same logic as forwards, MECAs can be run in reverse by simply swapping the pre-initial and initial states (the previous and current timesteps [state] of the cellular automata) the forward pass (encryption) converged to.
 
 \subsubsection{First-order CLU}
 
@@ -129,7 +135,7 @@ $$
 
 \subsubsection{Second-order CLU}
 
-The second-order CLU selects a chaotic second-order rule based on the remainder ($mod$ 7) of the current state of the MECA (timestep $t$). The mappings are shown in table \ref{tab:second-order-clu} and the rules are shown evolved with random initial conditions in figures \ref{fig:figure4}, \ref{fig:figure5}, \ref{fig:figure6}, \ref{fig:figure7}, \ref{fig:figure8}, \ref{fig:figure9}, \ref{fig:figure10}.
+The second-order CLU selects a chaotic second-order rule based on the remainder ($mod$ 7) of the current state of the MECA (timestep $t$). The rules are shown evolved with random initial conditions in figures \ref{fig:figure4}, \ref{fig:figure5}, \ref{fig:figure6}, \ref{fig:figure7}, \ref{fig:figure8}, \ref{fig:figure9}, \ref{fig:figure10}.
 
 The metamorphic engine for MECA rule selection is defined by the piecewise function below.
 
@@ -143,23 +149,6 @@ $$
                  229 & $x$ $mod$ $7 = 6$ \cr }
 $$
 
-\begin{table}[h!]
-  \begin{center}
-    \caption{Second-order CLU mapping}
-    \label{tab:second-order-clu}
-    \begin{tabular}{l|c|r} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
-      \textbf{Remainder} & \textbf{Rule}\\
-      \hline
-      0 & 75\\
-      1 & 86\\
-      2 & 89\\
-      3 & 149\\
-      4 & 166\\
-      5 & 173\\
-      6 & 229\\
-    \end{tabular}
-  \end{center}
-\end{table}
 
 \begin{figure}[H]
   \begin{center}
@@ -175,6 +164,10 @@ $$
       \centering
       \includegraphics[scale=.5]{86.png}
     \end{minipage}
+  \end{center}
+\end{figure}
+\begin{figure}[H]
+  \begin{center}
     \begin{minipage}{0.48\textwidth}
       \caption{Rule 89}
       \label{fig:figure6}
@@ -203,6 +196,10 @@ $$
       \centering
       \includegraphics[scale=.5]{173.png}
     \end{minipage}
+  \end{center}
+\end{figure}
+\begin{figure}[H]
+  \begin{center}
     \begin{minipage}{0.48\textwidth}
       \caption{Rule 229}
       \label{fig:figure10}
@@ -328,12 +325,11 @@ $$
 
 At optimal throughput, here are is the runtime for encryption and decryption for various word sizes. These tests were conducted from a C++ implementation running on an Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz under Linux kernel 5.13.0-27.
 
-
 \begin{table}[h!]
   \begin{center}
     \caption{Performance of various word sizes}
     \label{tab:performance}
-    \begin{tabular}{l|r} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
+    \begin{tabular}{l|r}
       \textbf{Word size} & \textbf{Execution time}\\
       \hline
       16-bit & 23 us\\
@@ -343,9 +339,13 @@ At optimal throughput, here are is the runtime for encryption and decryption for
   \end{center}
 \end{table}
 
-\section{Implementation Issues}
+\section{Implementation Considerations}
 
-\section{Design and Motivation}
+Implementing the MECA cipher can pose its own challenges in terms of performance. Firstly, when creating the second-order automata $A$ and $B$ during half-rounds, you will need to efficiently divide the block in half which (depending on word size) can be up to 128-bits each. Finding a suitable container for the state is key to performance and avoiding strings at all cost. My solution for the reference implementation was using C++'s STL bitset. This way, you may efficiently create two 128-bit wide bitsets and left-shift/OR the two 64-bit words efficiently into the state of $A$ and $B$.
+
+TODO: Use array of function pointers for metamorphic engines and compare performance.
+
+\section{Test Vectors}
 
 \section{Security}
 
@@ -354,6 +354,8 @@ At optimal throughput, here are is the runtime for encryption and decryption for
 \section{Conclusions}
 
 \section{Acknowledgements}
+
+Michael Andrew Sanchez, my family, and those who put up with me.
 
 \begin{thebibliography}{unsrt}
   \bibitem{class-4}
