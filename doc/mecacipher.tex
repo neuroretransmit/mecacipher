@@ -254,13 +254,15 @@ $$
     \Output
       \Desc{$C$}{4 $w$-bit words of ciphertext}
     \EndOutput
-    \State $A \gets P_0 \ll w \mathbin{|}  P_1$
-	\State $B \gets P_2 \ll w \mathbin{|}  P_3$
+    \State $A_{t-1} \gets P_0$
+    \State $A_{t} \gets P_1$
+	\State $B_{t-1} \gets P_2$
+	\State $B_{t} \gets P_3$
 	\State $j \gets 0$
 	\For{$i \gets 0$ to $r - 1$}
-		\State $A \gets A \oplus L_j$
+		\State $A_{t} \gets A_{t} \oplus L_j$
 		\State $A \gets z(A, m(A))$
-		\State $B \gets B \oplus L_{j+1}$
+		\State $B_{t} \gets B_{t} \oplus L_{j+1}$
 		\State $B \gets z(B, m(B))$
 		\State $j \gets j + 2$
     \EndFor
@@ -291,14 +293,16 @@ $$
     \Output
       \Desc{$P$}{4 $w$-bit words of plaintext}
     \EndOutput
-    \State $A \gets C_1 \ll w \mathbin{|}  C_0$
-	\State $B \gets C_3 \ll w \mathbin{|}  C_2$
+    \State $A_{t-1} \gets C_1$
+    \State $A_{t} \gets C_0$
+	\State $B_{t-1} \gets C_3$
+	\State $B_{t} \gets C_2$
 	\State $j \gets 2r-1$
 	\For{$i \gets 0$ to $r - 1$}
 		\State $A \gets z(A, m(A))$
-		\State $A \gets A \oplus L_j$
+		\State $A_{t-1} \gets A_{t-1} \oplus L_j$
 		\State $B \gets z(B, m(B))$
-		\State $B \gets B \oplus L_{j+1}$
+		\State $B_{t-1} \gets B_{t-1} \oplus L_{j-1}$
 		\State $j \gets j - 2$
     \EndFor
     \State $P_0 \gets A_{t-1}$
