@@ -76,7 +76,7 @@ There are two metamorphic engines in use, one using irreversible first-order CA 
 
 \subsubsection{First-order CLU}
 
-The first-order CLU selects a class 4 elementary CA rule based on the remainder ($mod$ 3) of the key-generating-key word at index $i$ of a specific iteration in the scheduling algorithm XORed with the current key schedule key at index $j$. The mappings are shown in table \ref{tab:table1} and the rules are shown evolved with random initial conditions in figures \ref{fig:figure1}, \ref{fig:figure2}, \ref{fig:figure3}.
+The first-order CLU selects a class 4 elementary CA rule based on the remainder ($mod$ 3) of the key-generating-key word at index $i$ of a specific iteration in the scheduling algorithm XORed with the current key schedule key at index $j$. The mappings are shown in table \ref{tab:first-order-clu} and the rules are shown evolved with random initial conditions in figures \ref{fig:figure1}, \ref{fig:figure2}, \ref{fig:figure3}.
 
 The metamorphic engine for CA rule selection is defined by the piecewise function below.
 
@@ -89,8 +89,8 @@ $$
 \begin{table}[h!]
   \begin{center}
     \caption{First-order CLU mapping}
-    \label{tab:table1}
-    \begin{tabular}{l|c|r} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
+    \label{tab:first-order-clu}
+    \begin{tabular}{l|r} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
       \textbf{Remainder} & \textbf{Rule}\\
       \hline
       0 & 54\\
@@ -129,12 +129,24 @@ $$
 
 \subsubsection{Second-order CLU}
 
-The second-order CLU selects a chaotic second-order rule based on the remainder ($mod$ 7) of the current state of the MECA (timestep $t$). The mappings are shown in table \ref{tab:table2}.
+The second-order CLU selects a chaotic second-order rule based on the remainder ($mod$ 7) of the current state of the MECA (timestep $t$). The mappings are shown in table \ref{tab:second-order-clu} and the rules are shown evolved with random initial conditions in figures \ref{fig:figure4}, \ref{fig:figure5}, \ref{fig:figure6}, \ref{fig:figure7}, \ref{fig:figure8}, \ref{fig:figure9}, \ref{fig:figure10}.
+
+The metamorphic engine for MECA rule selection is defined by the piecewise function below.
+
+$$
+  m(x) = \cases{ 75  & $x$ $mod$ $7 = 0$ \cr
+                 86  & $x$ $mod$ $7 = 1$ \cr
+                 89  & $x$ $mod$ $7 = 2$ \cr
+                 149 & $x$ $mod$ $7 = 3$ \cr
+                 166 & $x$ $mod$ $7 = 4$ \cr
+                 173 & $x$ $mod$ $7 = 5$ \cr
+                 229 & $x$ $mod$ $7 = 6$ \cr }
+$$
 
 \begin{table}[h!]
   \begin{center}
     \caption{Second-order CLU mapping}
-    \label{tab:table2}
+    \label{tab:second-order-clu}
     \begin{tabular}{l|c|r} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
       \textbf{Remainder} & \textbf{Rule}\\
       \hline
@@ -227,7 +239,7 @@ $$
     \State $j \gets 0$
     \State $i \gets 0$
     \For{$s \gets 0$ to max(c, $2r$)}
-      \State $S_i \gets c(S_i, m(L[j] \oplus S_i))$ 
+      \State $S_i \gets c(S_i, m(L_j \oplus S_i))$ 
       \State $i \gets i+1$ $mod$ $2r-1$
       \State $j \gets j+1$ $mod$ $c-1$
     \EndFor
@@ -313,6 +325,23 @@ $$
 \end{algorithm}
 
 \section{Performance}
+
+At optimal throughput, here are is the runtime for encryption and decryption for various word sizes. These tests were conducted from a C++ implementation running on an Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz under Linux kernel 5.13.0-27.
+
+
+\begin{table}[h!]
+  \begin{center}
+    \caption{Performance of various word sizes}
+    \label{tab:performance}
+    \begin{tabular}{l|r} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
+      \textbf{Word size} & \textbf{Execution time}\\
+      \hline
+      16-bit & 23 us\\
+      32-bit & 38 us\\
+      64-bit & 65 us\\
+    \end{tabular}
+  \end{center}
+\end{table}
 
 \section{Implementation Issues}
 
