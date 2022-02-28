@@ -143,10 +143,10 @@ template<typename WordSize, size_t Rounds> class MECACipher
             a.xor_prev(round_keys[key - 1]);
         }
 
-        output_block[0] = a.prev().to_ullong();
-        output_block[1] = a.state().to_ullong();
-        output_block[2] = b.prev().to_ullong();
-        output_block[3] = b.state().to_ullong();
+        output_block[1] = a.prev().to_ullong();
+        output_block[0] = a.state().to_ullong();
+        output_block[3] = b.prev().to_ullong();
+        output_block[2] = b.state().to_ullong();
         return output_block;
     }
 };
