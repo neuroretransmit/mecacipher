@@ -5,6 +5,8 @@
 \usepackage{float}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{bytefield}
+\usepackage{adjustbox}
 
 \title{\textbf{The MECA Block Cipher}}
 \author{John Holly}
@@ -66,7 +68,7 @@ A second-order CA is defined similarly, with the exception of it tracking two ti
 
 TODO: Will there be three metamorphic engines? One for the binop of combining key with plaintext.
 
-Metamorphism is a process that occurs in rocks where transformation to a rock of a different composition occurs. The data-dependent transformations in CA and MECA make this seem like a fitting nomenclature.
+Metamorphism is a process that occurs in rocks where transformation to a rock of a different composition occurs. The data-dependent transformations in CA and MECA make this seem like a fitting nomenclature... dude.
 
 There are two metamorphic engines in use, one using irreversible first-order CA rules as a one-way hashing function for the key-generating-key (unscheduled, the one of $b$ bytes specified as a parameter), and one used during encryption/decryption rounds selecting the second-order rules per round. The first-order engine selects from 3 class 4 elementary CA rules. The second-order engine selects from 7 cherry-picked rules that also display globally chaotic behavior\cite{MECA-Properties}.
 
@@ -74,7 +76,7 @@ There are two metamorphic engines in use, one using irreversible first-order CA 
 
 The design of MECA began with inspiration from a handful of other well known ciphers: RC6\cite{RC6} for its small size and simplicity, speed, and elegant extensibility to different word sizes, rounds, and key length, Stone Cipher-192 (SC-192)\cite{SC-192} for its crypto logic unit (metamorphic engine, or CLU), and a variety of papers I've read on novel ciphers utilizing first-order elementary cellular automata.
 
-The MECA cipher was designed to be simplistic and easily understood to those without a deep knowledge of mathematics and cryptography from an implementation standpoint. The goals in mind were simplistic chaos that can be easily visualized, extensibility, efficiency in both hardware and software implementations, and exploitation of the reversibility of second-order cellular automata in place of traditional feistel networks.
+The MECA cipher was designed to be simplistic and easily understood to those without a deep knowledge of mathematics and cryptography from an implementation standpoint. The goals in mind were simplistic chaos that can be easily visualized, extensibility, efficiency in both hardware and software implementations, and exploitation of the reversibility of second-order cellular automata in place of traditional feistel networks. This is accomplished by having the current/previous or next timestep encoded in the  encrypted data's upper/lower half of blocks - this also simplifies encryption/decryption logic by requiring simply a swap of said states.
 
 \section{Details}
 
@@ -82,7 +84,7 @@ Similarly to RC5 and RC6, MECA is fully parameterized and can be specified as ME
 
 \subsubsection{First-order CLU}
 
-The first-order CLU selects a class 4 elementary CA rule based on the remainder ($mod$ 3) of the key-generating-key word at index $i$ of a specific iteration in the scheduling algorithm XORed with the current key schedule key at index $j$. The mappings are shown in table \ref{tab:first-order-clu} and the rules are shown evolved with random initial conditions in figures \ref{fig:figure1}, \ref{fig:figure2}, \ref{fig:figure3}.
+The first-order CLU selects a class 4 elementary CA rule based on the remainder ($mod$ 3) of the key-generating-key word at index $i$ of a specific iteration in the scheduling algorithm XORed with the current key schedule key at index $j$. The mappings are shown in table \ref{tab:first-order-clu} and the rules are shown evolved with random initial conditions in Figure~\ref{fig:rule54}, Figure~\ref{fig:rule110}, Figure~\ref{fig:rule137}.
 
 The metamorphic engine for CA rule selection is defined by the piecewise function below.
 
@@ -110,13 +112,13 @@ $$
   \begin{center}
     \begin{minipage}{0.48\textwidth}
       \caption{Rule 54}
-      \label{fig:figure1}
+      \label{fig:rule54}
       \centering
       \includegraphics[scale=.5]{54.png}
     \end{minipage}
     \begin{minipage}{0.48\textwidth}
       \caption{Rule 110}
-      \label{fig:figure2}
+      \label{fig:rule110}
       \centering
       \includegraphics[scale=.5]{110.png}
     \end{minipage}
@@ -126,7 +128,7 @@ $$
   \begin{center}
     \begin{minipage}{0.48\textwidth}
       \caption{Rule 137}
-      \label{fig:figure3}
+      \label{fig:rule137}
       \centering
       \includegraphics[scale=.5]{137.png}
     \end{minipage}
@@ -135,7 +137,7 @@ $$
 
 \subsubsection{Second-order CLU}
 
-The second-order CLU selects a chaotic second-order rule based on the remainder ($mod$ 7) of the current state of the MECA (timestep $t$). The rules are shown evolved with random initial conditions in figures \ref{fig:figure4}, \ref{fig:figure5}, \ref{fig:figure6}, \ref{fig:figure7}, \ref{fig:figure8}, \ref{fig:figure9}, \ref{fig:figure10}.
+The second-order CLU selects a chaotic second-order rule based on the remainder ($mod$ 7) of the current state of the MECA (timestep $t$). The rules are shown evolved with random initial conditions in Figure~\ref{fig:rule75}, Figure~\ref{fig:rule86}, Figure~\ref{fig:rule89}, Figure~\ref{fig:rule149}, Figure~\ref{fig:rule166}, Figure~\ref{fig:rule173}, Figure~\ref{fig:rule229}.
 
 The metamorphic engine for MECA rule selection is defined by the piecewise function below.
 
@@ -154,13 +156,13 @@ $$
   \begin{center}
     \begin{minipage}{0.48\textwidth}
       \caption{Rule 75}
-      \label{fig:figure4}
+      \label{fig:rule75}
       \centering
       \includegraphics[scale=.5]{75.png}
     \end{minipage}
     \begin{minipage}{0.48\textwidth}
       \caption{Rule 86}
-      \label{fig:figure5}
+      \label{fig:rule86}
       \centering
       \includegraphics[scale=.5]{86.png}
     \end{minipage}
@@ -170,13 +172,13 @@ $$
   \begin{center}
     \begin{minipage}{0.48\textwidth}
       \caption{Rule 89}
-      \label{fig:figure6}
+      \label{fig:rule89}
       \centering
       \includegraphics[scale=.5]{89.png}
     \end{minipage}
     \begin{minipage}{0.48\textwidth}
       \caption{Rule 149}
-      \label{fig:figure7}
+      \label{fig:rule149}
       \centering
       \includegraphics[scale=.5]{149.png}
     \end{minipage}
@@ -186,13 +188,13 @@ $$
   \begin{center}
     \begin{minipage}{0.48\textwidth}
       \caption{Rule 166}
-      \label{fig:figure8}
+      \label{fig:rule166}
       \centering
       \includegraphics[scale=.5]{166.png}
     \end{minipage}
     \begin{minipage}{0.48\textwidth}
       \caption{Rule 173}
-      \label{fig:figure9}
+      \label{fig:rule173}
       \centering
       \includegraphics[scale=.5]{173.png}
     \end{minipage}
@@ -202,7 +204,7 @@ $$
   \begin{center}
     \begin{minipage}{0.48\textwidth}
       \caption{Rule 229}
-      \label{fig:figure10}
+      \label{fig:rule229}
       \centering
       \includegraphics[scale=.5]{229.png}
     \end{minipage}
@@ -323,18 +325,18 @@ $$
 
 \section{Performance}
 
-At optimal throughput, here are is the runtime for encryption and decryption for various word sizes. These tests were conducted from a C++ implementation running on an Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz under Linux kernel 5.13.0-27.
+At optimal throughput, here are is the runtime for encryption and decryption for various word sizes. These tests were conducted from a C++ implementation running on an 12th Gen Intel(R) Core(TM) i5-1235UCPU @ 2.50GHz under Linux kernel 6.17.7-1.
 
 \begin{table}[h!]
   \begin{center}
     \caption{Performance of various word sizes}
     \label{tab:performance}
-    \begin{tabular}{l|r}
-      \textbf{Word size} & \textbf{Execution time}\\
+    \begin{tabular}{l|r|r}
+      \textbf{Word size} & \textbf{Encryption Execution Time} & \textbf{Decryption Execution Time}\\
       \hline
-      16-bit & 23 us\\
-      32-bit & 38 us\\
-      64-bit & 65 us\\
+      16-bit & 31 us & 22 us\\
+      32-bit & 36 us & 36 us\\
+      64-bit & 65 us & 65 us\\
     \end{tabular}
   \end{center}
 \end{table}
@@ -346,6 +348,81 @@ Implementing the MECA cipher can pose its own challenges in terms of performance
 TODO: Use array of function pointers for metamorphic engines and compare performance.
 
 \section{Test Vectors}
+
+\subsection{16-bit words (64-bit block)}
+
+\begin{adjustbox}{max width=\textwidth, valign=t, minipage=4cm}
+Plaintext \\
+\\
+\begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
+	\bitheader{0-7} \\
+	\bitbox{2}{1337} & \bitbox{2}{1337} & \bitbox{2}{1337} & \bitbox{2}{1337} \\
+\end{bytefield} \\
+
+Key \\
+\\
+\begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
+	\bitheader{0-29} \\
+	\bitbox{2}{4d79} & \bitbox{2}{2063} & \bitbox{2}{7269} & \bitbox{2}{6d65} & \bitbox{2}{2069} & \bitbox{2}{7320} & \bitbox{2}{7468} & \bitbox{2}{6174} & \bitbox{2}{206f} & \bitbox{2}{6620} & \bitbox{2}{6375} & \bitbox{2}{7269} & \bitbox{2}{6f73} & \bitbox{2}{6974} & \bitbox{2}{7900} \\
+\end{bytefield} \\
+
+Decrypted \\
+\\
+\begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
+	\bitheader{0-7} \\
+	\bitbox{2}{1337} & \bitbox{2}{1337} & \bitbox{2}{1337} & \bitbox{2}{1337} \\
+\end{bytefield}
+\end{adjustbox}
+
+\subsection{32-bit words (128-bit block)}
+
+\begin{adjustbox}{max width=\textwidth, valign=t, minipage=4cm}
+Plaintext \\
+\\
+\begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
+	\bitheader{0-15} \\
+	\bitbox{4}{00001337} & \bitbox{4}{00001337} & \bitbox{4}{00001337} & \bitbox{4}{00001337} \\
+\end{bytefield} \\
+
+Key \\
+\\
+\begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
+	\bitheader{0-31} \\
+	\bitbox{4}{4d792063} & \bitbox{4}{72696d65} & \bitbox{4}{20697320} & \bitbox{4}{74686174} & \bitbox{4}{206f6620} & \bitbox{4}{63757269} & \bitbox{4}{6f736974} & \bitbox{4}{79000000} \\
+\end{bytefield} \\
+
+Decrypted \\
+\\
+\begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
+	\bitheader{0-15} \\
+	\bitbox{4}{00001337} & \bitbox{4}{00001337} & \bitbox{4}{00001337} & \bitbox{4}{00001337} \\
+\end{bytefield} \\
+\end{adjustbox} \\
+
+\subsection{64-bit words (256-bit block)}
+
+\begin{adjustbox}{max width=\textwidth, valign=t, minipage=4cm}
+Plaintext \\
+\\
+\begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
+	\bitheader{0-15} \\
+	\bitbox{8}{0000000000001337} & \bitbox{8}{0000000000001337} & \bitbox{8}{0000000000001337} & \bitbox{8}{0000000000001337} \\
+\end{bytefield} \\
+
+Key \\
+\\
+\begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
+	\bitheader{0-31} \\
+	\bitbox{8}{4d79206372696d65} & \bitbox{8}{2069732074686174} & \bitbox{8}{206f662063757269} \bitbox{8}{6f73697479000000} \\
+\end{bytefield} \\
+
+Decrypted \\
+\\
+\begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
+	\bitheader{0-15} \\
+	\bitbox{8}{0000000000001337} & \bitbox{8}{0000000000001337} & \bitbox{8}{0000000000001337} & \bitbox{8}{0000000000001337} \\
+\end{bytefield} \\
+\end{adjustbox} \\
 
 \section{Security}
 
