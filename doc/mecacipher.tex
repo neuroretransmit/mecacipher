@@ -7,6 +7,9 @@
 \usepackage{algpseudocode}
 \usepackage{bytefield}
 \usepackage{adjustbox}
+\usepackage[backend=bibtex,style=authoryear]{biblatex}
+\addbibresource{references.bib}
+
 
 \title{\textbf{The MECA Block Cipher}}
 \author{John Holly}
@@ -70,11 +73,11 @@ TODO: Will there be three metamorphic engines? One for the binop of combining ke
 
 Metamorphism is a process that occurs in rocks where transformation to a rock of a different composition occurs. The data-dependent transformations in CA and MECA make this seem like a fitting nomenclature... dude.
 
-There are two metamorphic engines in use, one using irreversible first-order CA rules as a one-way hashing function for the key-generating-key (unscheduled, the one of $b$ bytes specified as a parameter), and one used during encryption/decryption rounds selecting the second-order rules per round. The first-order engine selects from 3 class 4 elementary CA rules. The second-order engine selects from 7 cherry-picked rules that also display globally chaotic behavior\cite{MECA-Properties}.
+There are two metamorphic engines in use, one using irreversible first-order CA rules as a one-way hashing function for the key-generating-key (unscheduled, the one of $b$ bytes specified as a parameter), and one used during encryption/decryption rounds selecting the second-order rules per round. The first-order engine selects from 3 class 4 elementary CA rules. The second-order engine selects from 7 cherry-picked rules that also display globally chaotic behavior (\cite{MECAProperties}).
 
 \section{Design and Motivation}
 
-The design of MECA began with inspiration from a handful of other well known ciphers: RC6\cite{RC6} for its small size and simplicity, speed, and elegant extensibility to different word sizes, rounds, and key length, Stone Cipher-192 (SC-192)\cite{SC-192} for its crypto logic unit (metamorphic engine, or CLU), and a variety of papers I've read on novel ciphers utilizing first-order elementary cellular automata.
+The design of MECA began with inspiration from a handful of other well known ciphers: RC6 (\cite{RC6}) for its small size and simplicity, speed, and elegant extensibility to different word sizes, rounds, and key length, Stone Cipher-192 (SC-192) (\cite{SC192}) for its crypto logic unit (metamorphic engine, or CLU), and a variety of papers I've read on novel ciphers utilizing first-order elementary cellular automata.
 
 The MECA cipher was designed to be simplistic and easily understood to those without a deep knowledge of mathematics and cryptography from an implementation standpoint. The goals in mind were simplistic chaos that can be easily visualized, extensibility, efficiency in both hardware and software implementations, and exploitation of the reversibility of second-order cellular automata in place of traditional feistel networks. This is accomplished by having the current/previous or next timestep encoded in the  encrypted data's upper/lower half of blocks - this also simplifies encryption/decryption logic by requiring simply a swap of said states.
 
@@ -426,6 +429,15 @@ Decrypted \\
 
 \section{Security}
 
+First and foremost, when considering security - I wanted a large key size. The goal
+was to use a cellular automata - whether second-order or first-order for everything.
+With this in mind, without using a SAT solver, reversing a first-order cellular
+automata that is chaotic - such as the chosen rules is quite difficult and 
+computationally expensive. A key size of up to 255 bytes is possible much like in RC6, as much of the key derivation function was adapted from it. The key schedule, however, is metamorphically evolved using globally chaotic (class 4) rules of elementary cellular automata fulfilling the desire of the previous paragraph. This makes them mostly irreversible outside of plausible SAT solver attacks as demonstrated in PagedOut!'s second issue (\cite{pagedout}).
+
+
+
+
 \section{Flexibility and Future Direction}
 
 \section{Conclusions}
@@ -434,14 +446,6 @@ Decrypted \\
 
 Michael Andrew Sanchez, my family, and those who put up with me.
 
-\begin{thebibliography}{unsrt}
-  \bibitem{class-4}
-  Dhar, Avinash and Lakdawala, Porus and Mandal, Gautam and Wadia, Spenta, \emph{Universal Cellular Automata and Class 4}, 1994
-  \bibitem{RC6}
-  Ronald L. Rivest, M.J.B. Robshaw, R. Sidney, and Y.L. Yin, \emph{The RC6\texttrademark Block Cipher} (First Advanced Encryption Standard (AES) Conference, USA, 1998).
-  \bibitem{SC-192}
-  Magdy Saeb, \emph{The Stone Cipher-192 (SC-192): A Metamorphic Cipher} (IJCNS) International Journal of Computer and Network Security, 2009
-  \bibitem{MECA-Properties}
-  A. H. Encinas, A. M. d. Rey, J. L. P. Iglesias, G. R. Sánchez and A. Q. Dios, \emph{Cryptographic Properties of Second-Order Memory Elementary Cellular Automata} 2008 Third International Conference on Availability, Reliability and Security, 2008, pp. 741-745, doi: 10.1109/ARES.2008.114.
-\end{thebibliography}
+\printbibliography
+
 \end{document}

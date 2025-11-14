@@ -6,3 +6,7 @@ doc/*.pdf
 doc/*.log
 doc/*.gz
 doc/*.aux
+doc/*.bbl
+doc/*.blg
+doc/*.run.xml
+doc/*-blx.bib
