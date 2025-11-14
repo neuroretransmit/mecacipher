@@ -2,7 +2,6 @@
 **.swp
 build/
 CMakeLists.txt.user
-doc/*.pdf
 doc/*.log
 doc/*.gz
 doc/*.aux
