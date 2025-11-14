@@ -21,7 +21,9 @@ template<typename WordSize, size_t Rounds> class MECACipher
     const WordSize P = WordSize(ceil((M_E - 2) * pow(2, numeric_limits<WordSize>::digits)));
     /// Binary expansion of the golden ratio - 1
     const WordSize Q = WordSize(((1.618033988749895 - 1) * pow(2, numeric_limits<WordSize>::digits)));
-
+    // TODO: Array of function pointers that does a map lookup for state modulo 7 => step(rule)
+    // TODO: May have to think about restructuring this portion of the program
+    
     /**
      * @brief metamorphic timestep depending on current state
      * @param meca second-order cellular automata to evolve
@@ -101,6 +103,9 @@ template<typename WordSize, size_t Rounds> class MECACipher
     vector<WordSize> encrypt(const vector<WordSize>& plaintext, const vector<WordSize>& round_keys)
     {
         const size_t bitsize = numeric_limits<WordSize>::digits;
+        // FIXME: Instead of having a static output block size, it should be read from the ciphertext
+        //        - both A and B need to be reconstructed to accomodate larger sizes so this should
+        //          be dynamic
         vector<WordSize> output_block(4);
         MECA<bitsize, BOUNDARY_PERIODIC> a(bitset<bitsize * 2>(plaintext[0]) << bitsize |
                                            bitset<bitsize * 2>(plaintext[1]));
@@ -130,6 +135,9 @@ template<typename WordSize, size_t Rounds> class MECACipher
     vector<WordSize> decrypt(const vector<WordSize>& ciphertext, const vector<WordSize>& round_keys)
     {
         const size_t bitsize = numeric_limits<WordSize>::digits;
+        // FIXME: Instead of having a static output block size, it should be read from the ciphertext
+        //        - both A and B need to be reconstructed to accomodate larger sizes so this should
+        //          be dynamic
         vector<WordSize> output_block(4);
         MECA<bitsize, BOUNDARY_PERIODIC> a(
             bitset<bitsize * 2>(ciphertext[0]) << bitsize | bitset<bitsize * 2>(ciphertext[1]), true);

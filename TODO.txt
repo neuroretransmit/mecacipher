@@ -1,0 +1,4 @@
+- Modify encryption/decryption or unparameterize tests to align more the rc6 implementation
+  to operate on streams of bytes or operate over words in blocks with shifts similarly
+- Try to implement metamorphic engine using array of function pointers/do the same for any
+  other branch sections that are hotspots in the code.

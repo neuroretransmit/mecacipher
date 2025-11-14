@@ -2,6 +2,7 @@
 #include <gmock/gmock.h>
 
 #include <chrono>
+#include <iomanip>
 
 #include "../src/mecacipher.h"
 #include "../src/util.h"
