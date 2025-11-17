@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <climits>
 #include <cmath>
 #include <limits>
@@ -8,6 +9,26 @@
 #include "meca.h"
 
 using namespace std;
+
+// Map of remainder -> second order rule for block cipher
+std::map<uint8_t, uint8_t> MECA_MORPH = {
+    {0, 75},
+    {1, 86},
+    {2, 89},
+    {3, 149},
+    {4, 166},
+    {5, 173},
+    {6, 229} 
+};
+
+
+// Map of remainder -> first order rule for keys schedule
+std::map<uint8_t, uint8_t> SCHEDULE_MORPH = {
+    {0, 54},
+    {1, 110},
+    {2, 137},
+};
+
 
 /**
  * @brief metamorphic cipher using second-order cellular automata
@@ -21,38 +42,13 @@ template<typename WordSize, size_t Rounds> class MECACipher
     const WordSize P = WordSize(ceil((M_E - 2) * pow(2, numeric_limits<WordSize>::digits)));
     /// Binary expansion of the golden ratio - 1
     const WordSize Q = WordSize(((1.618033988749895 - 1) * pow(2, numeric_limits<WordSize>::digits)));
-    // TODO: Array of function pointers that does a map lookup for state modulo 7 => step(rule)
-    // TODO: May have to think about restructuring this portion of the program
-    
     /**
      * @brief metamorphic timestep depending on current state
      * @param meca second-order cellular automata to evolve
      */
     void morph(MECA<numeric_limits<WordSize>::digits, BOUNDARY_PERIODIC>& meca)
     {
-        switch (meca.state().to_ullong() % 7) {
-        case 0:
-            meca.step(75);
-            break;
-        case 1:
-            meca.step(86);
-            break;
-        case 2:
-            meca.step(89);
-            break;
-        case 3:
-            meca.step(149);
-            break;
-        case 4:
-            meca.step(166);
-            break;
-        case 5:
-            meca.step(173);
-            break;
-        case 6:
-            meca.step(229);
-            break;
-        }
+        meca.step(MECA_MORPH[meca.state().to_ullong() % 7]);
     }
 
   public:
@@ -77,17 +73,7 @@ template<typename WordSize, size_t Rounds> class MECACipher
              s++, i += 1 % num_keys - 1, j += 1 % key.size() - 1) {
             // Evolve supplied key using globally chaotic (class 4) rules
             CA<numeric_limits<WordSize>::digits, BOUNDARY_PERIODIC> ca(key[j] ^ keys[i]);
-            switch (ca.state().to_ullong() % 3) {
-            case 0:
-                ca.step(54);
-                break;
-            case 1:
-                ca.step(110);
-                break;
-            case 2:
-                ca.step(137);
-                break;
-            }
+            ca.step(SCHEDULE_MORPH[ca.state().to_ullong() % 3]);
             keys[i] = ca.state().to_ullong();
         }
 
