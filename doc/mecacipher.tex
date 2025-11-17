@@ -369,6 +369,13 @@ Key \\
 	\bitbox{2}{4d79} & \bitbox{2}{2063} & \bitbox{2}{7269} & \bitbox{2}{6d65} & \bitbox{2}{2069} & \bitbox{2}{7320} & \bitbox{2}{7468} & \bitbox{2}{6174} & \bitbox{2}{206f} & \bitbox{2}{6620} & \bitbox{2}{6375} & \bitbox{2}{7269} & \bitbox{2}{6f73} & \bitbox{2}{6974} & \bitbox{2}{7900} \\
 \end{bytefield} \\
 
+Encrypted \\
+\\
+\begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
+	\bitheader{0-7} \\
+	\bitbox{2}{ee1c} & \bitbox{2}{fa14} & \bitbox{2}{68e1} & \bitbox{2}{51c8} \\
+\end{bytefield} \\
+
 Decrypted \\
 \\
 \begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
@@ -392,6 +399,13 @@ Key \\
 \begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
 	\bitheader{0-31} \\
 	\bitbox{4}{4d792063} & \bitbox{4}{72696d65} & \bitbox{4}{20697320} & \bitbox{4}{74686174} & \bitbox{4}{206f6620} & \bitbox{4}{63757269} & \bitbox{4}{6f736974} & \bitbox{4}{79000000} \\
+\end{bytefield} \\
+
+Encrypted \\
+\\
+\begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
+	\bitheader{0-15} \\
+	\bitbox{4}{d93041ec} & \bitbox{4}{e3fa5b94} & \bitbox{4}{01a2df58} & \bitbox{4}{71ca05ab} \\
 \end{bytefield} \\
 
 Decrypted \\
@@ -419,6 +433,13 @@ Key \\
 	\bitbox{8}{4d79206372696d65} & \bitbox{8}{2069732074686174} & \bitbox{8}{206f662063757269} \bitbox{8}{6f73697479000000} \\
 \end{bytefield} \\
 
+Encrypted \\
+\\
+\begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
+	\bitheader{0-15} \\
+	\bitbox{8}{e72d26f7318d3da2} & \bitbox{8}{0ec874868d14ac9b} & \bitbox{8}{7d91e0e34ee12d46} & \bitbox{8}{0fd1e08f367ad342} \\
+\end{bytefield} \\
+
 Decrypted \\
 \\
 \begin{bytefield}[endianness=little,bitwidth=0.11111\linewidth]{8}
@@ -431,7 +452,7 @@ Decrypted \\
 
 First and foremost, when considering security - I wanted a large key size. The goal
 was to use a first-order cellular automata - whether second-order or first-order for everything. With this in mind, without using an SMT solver, reversing a first-order cellular automata that is chaotic - such as the chosen rules is quite difficult and 
-computationally expensive. A key size of up to 255 bytes is possible much like in RC6, as much of the key derivation function was adapted from it. The key schedule, however, is metamorphically evolved using globally chaotic (class 4) rules of elementary cellular automata fulfilling the desire of the previous sentence. This makes them mostly irreversible outside of plausible SAT solver attacks as demonstrated in PagedOut!'s second issue (\cite{pagedout}).
+computationally expensive. A key size of up to 255 bytes is possible much like in RC6, as much of the key derivation function was adapted from it. The key schedule, however, is metamorphically evolved using globally chaotic (class 4) rules of elementary cellular automata fulfilling the desire of the previous sentence. This makes them mostly irreversible outside of plausible SMT solver attacks as demonstrated in PagedOut!'s second issue (\cite{pagedout}).
 
 To make this block-cipher's operations data-dependent and thus harder to reverse the 
 algorithm in use at a given time, a methodology was chosen from the Stone Cipher (\cite{SC192}) paper that selectively chooses globally chaotic rules to evolve from
